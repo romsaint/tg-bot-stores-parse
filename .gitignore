@@ -1,0 +1,32 @@
+# Игнорирование директорий node_modules
+node_modules/
+
+# Игнорирование файлов конфигурации
+.env
+.env.local
+.env.*.local
+
+/uploads
+*.xls
+
+# Игнорирование логов и кэша
+logs/
+*.log
+.cache/
+.tmp/
+
+# Игнорирование файлов сборки
+dist/
+build/
+
+# Игнорирование файлов IDE
+.idea/
+.vscode/
+
+# Игнорирование файлов npm и yarn
+npm-debug.log
+yarn-error.log
+
+# Игнорирование файлов, специфичных для NestJS
+*.js.map
+*.d.ts
