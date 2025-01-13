@@ -1,5 +1,5 @@
 import TelegramBot from "node-telegram-bot-api";
-import { bot, gptNames } from "..";
+import { bot, gptNames, userGptReadyState } from "..";
 
 export async function constantBtn(msg: TelegramBot.Message, text: string) {
     await bot.sendMessage(msg.chat.id, text, {

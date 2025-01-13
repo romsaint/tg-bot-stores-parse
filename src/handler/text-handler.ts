@@ -8,37 +8,30 @@ export async function handlerText(msg: TelegramBot.Message) {
     const text = msg.text
     const chatId = msg.chat.id
     if(text === 'Назад' && gptAnswerReadyState[chatId]?.state) {
+        gptAnswerReadyState[chatId] = {gptVersion: '', state: ""}
         await constantBtn(msg, 'Выбери версию GPT')
         return
     }
-    if(text === gptNames[0]) {
+    if(text && gptNames.includes(text)) {
         await bot.sendMessage(chatId, 'Отправь свой вопрос:', {
             reply_markup: {
                 keyboard: [[{text: 'Назад'}]],
                 resize_keyboard: true
             }
         })
-        gptAnswerReadyState[chatId] = {state: 'ready', gptVersion: gptNames[0]}
+        gptAnswerReadyState[chatId] = {state: 'ready', gptVersion: text}
         return
     }
-    if(text === gptNames[1]) {
-        await bot.sendMessage(chatId, 'Отправь свой вопрос:', {
-            reply_markup: {
-                keyboard: [[{text: 'Назад'}]],
-                resize_keyboard: true
-            }
-        })
-        gptAnswerReadyState[chatId] = {state: 'ready', gptVersion: gptNames[1]}
-        return
-    }
-    
+ 
     if(text && gptAnswerReadyState[chatId]?.state) {
         switch(gptAnswerReadyState[chatId].gptVersion) {
             case gptNames[0]: {
                 await gpt4oMini(msg)
+                return
             }
             case gptNames[1]: {
                 await gpt35Turbo(msg)
+                return
             }
         }
     }
