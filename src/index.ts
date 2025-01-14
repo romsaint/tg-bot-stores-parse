@@ -14,7 +14,7 @@ export const bot = new TelegramBot(token, {
 export const commands = [
     {command: "start", description: "Start bot"}
 ]
-export const gptNames = ['GPT4o-mini', 'GPT-3.5-turbo']
+export const gptNames = ['GPT4o-mini', 'GPT-3.5-turbo', 'GPT-3.5-turbo-16k']
 // STATES
 export const userGptReadyState: {[key: number]: string} = {}
 export const gptAnswerReadyState: {[key: number]: {gptVersion: string, state: string}} = {}
