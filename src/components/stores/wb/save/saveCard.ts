@@ -9,9 +9,9 @@ function numberToARGB(number: number) {
     return number.toString(16).padStart(8, '0').toUpperCase();
 }
 
-export async function saveCardToExcel(data: any, priceHistoryData: any, feedbacksData: any, urls: string[] | null) {
+export async function saveCardToExcel(data: any, priceHistoryData: any, feedbacksData: any, urls: string[] | null, gptOpinion: string | undefined) {
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Sheet1');
+    const worksheet = workbook.addWorksheet('Sheet');
     const rows: string[] = ['Название', 'Описание', 'Раздел', 'Продавец', 'Цвет']
     const optionsValues: any[] = []
 
@@ -102,11 +102,17 @@ export async function saveCardToExcel(data: any, priceHistoryData: any, feedback
     worksheet.addRow(['Текст', 'Достоинства', 'Недостатки'])
     feedbacksData.feedbacks.forEach((val: any) => {
         let res: string | number[] = [val.text ? val.text : '', val.pros ? val.pros : '', val.cons ? val.cons : '',]
-        if(res.join('').length > 0) {
+        if (res.join('').length > 0) {
             worksheet.addRow(res)
         }
     })
 
+    if (gptOpinion) {
+        worksheet.addRow('')
+        worksheet.addRow('')
+        worksheet.addRow(['Мнение нейросети судя по отзывам'])
+        worksheet.addRow([gptOpinion])
+    }
     await workbook.xlsx.writeFile(`${data.nm_id}.xlsx`)
 
     return `${data.nm_id}.xlsx`
