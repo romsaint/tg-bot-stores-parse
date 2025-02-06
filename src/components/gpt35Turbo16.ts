@@ -28,7 +28,7 @@ export async function gpt35Turbo16k(msg: TelegramBot.Message) {
     } catch (e) {
         if (e instanceof Error) {
             console.log(e.message)
-            await bot.sendMessage(msg.chat.id, 'Server error 😢')
+            await bot.sendMessage(msg.chat.id, 'Произошла ошибка на сервере 😢')
         }
     }
 }

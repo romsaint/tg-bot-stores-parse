@@ -1,47 +1,43 @@
 import TelegramBot from "node-telegram-bot-api";
-import { bot, gptNames, gptAnswerReadyState, userGptReadyState } from "..";
-import { gpt4oMini } from "../components/gpt40-mini";
+import { bot, readyState, stores } from "..";
+import { parseWb } from "../components/stores/wb/parsing/parseWb";
+import { createReadStream, existsSync } from "fs";
+import path from "path";
 import { constantBtn } from "../components/constBtn";
-import { gpt35Turbo } from "../components/gpt-3.5-turbo";
-import { gpt35Turbo16k } from "../components/gpt35Turbo16";
+import { startBot } from "../commands/start";
+
 
 export async function handlerText(msg: TelegramBot.Message) {
     try {
+        const userId = msg.from?.id
         const text = msg.text
-        const chatId = msg.chat.id
-        if (text === 'Назад') {
-            gptAnswerReadyState[chatId] = { gptVersion: '', state: "" }
-            await constantBtn(msg, 'Выбери версию GPT')
-            return
-        }
-        else if (text && gptNames.includes(text)) {
-            await bot.sendMessage(chatId, 'Отправь свой вопрос:', {
-                reply_markup: {
-                    keyboard: [[{ text: 'Назад' }]],
-                    resize_keyboard: true
-                }
-            })
-            gptAnswerReadyState[chatId] = { state: 'ready', gptVersion: text }
-            return
-        }
 
-        else if (text && gptAnswerReadyState[chatId]?.state) {
-            switch (gptAnswerReadyState[chatId].gptVersion) {
-                case gptNames[0]: {
-                    await gpt4oMini(msg)
-                    return
-                }
-                case gptNames[1]: {
-                    await gpt35Turbo(msg)
-                    return
-                }
-                case gptNames[2]: {
-                    await gpt35Turbo16k(msg)
-                    return
-                }
+        if (userId && text) {
+            if (readyState[userId] === stores[0]) {
+              
+                    await bot.sendChatAction(userId, 'upload_document')
+                    const file = await parseWb(text)
+                    
+                    if (file) {
+                        const filepath = path.join(__dirname, '../../', file)
+                        const stream = createReadStream(filepath)
+                   
+                        await bot.sendDocument(userId, stream)
+                        return
+                    }else{
+                        await bot.sendMessage(userId, 'Wrong url')
+                        return
+                    }
             }
-        }else{
-            await bot.deleteMessage(msg.chat.id, msg.message_id)
+
+            else if (text === stores[0]) {
+                await bot.sendMessage(userId, 'Send product card url(e.g https://www.wildberries.ru/catalog/226791823/detail.aspx)', {
+                    parse_mode: 'HTML'
+                })
+                readyState[userId] = stores[0]
+            }else{
+                await startBot(msg)
+            }
         }
     } catch (e) {
         if (e instanceof Error) {

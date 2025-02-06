@@ -1,5 +1,5 @@
 import TelegramBot from "node-telegram-bot-api";
-import { bot, userGptReadyState } from "..";
+import { bot } from "..";
 import axios from "axios";
 const OpenAI = require("openai");
 
@@ -28,7 +28,7 @@ export async function gpt4oMini(msg: TelegramBot.Message) {
     } catch(e) {
         if(e instanceof Error) {
             console.log(e.message)
-            await bot.sendMessage(msg.chat.id, 'Server error 😢')
+            await bot.sendMessage(msg.chat.id, 'Произошла ошибка на сервере 😢')
         }
     }
 }
