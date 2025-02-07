@@ -1,10 +1,9 @@
 import TelegramBot from "node-telegram-bot-api";
 import { bot, readyState, stores } from "..";
 import { parseWb } from "../components/stores/wb/parsing/parseWb";
-import { createReadStream, existsSync } from "fs";
+import { createReadStream } from "fs";
 import path from "path";
-import { constantBtn } from "../components/constBtn";
-import { startBot } from "../commands/start";
+import { unlink } from "fs/promises";
 
 
 export async function handlerText(msg: TelegramBot.Message) {
@@ -14,8 +13,8 @@ export async function handlerText(msg: TelegramBot.Message) {
 
         if (userId && text) {
             if (readyState[userId] === stores[0]) {
-              
                     await bot.sendChatAction(userId, 'upload_document')
+                    const message = await bot.sendMessage(userId, 'Wait...')
                     const file = await parseWb(text)
                     
                     if (file) {
@@ -23,8 +22,11 @@ export async function handlerText(msg: TelegramBot.Message) {
                         const stream = createReadStream(filepath)
                    
                         await bot.sendDocument(userId, stream)
+                        await bot.deleteMessage(userId, message.message_id)
+                        await unlink(filepath)
                         return
                     }else{
+                        await bot.deleteMessage(userId, message.message_id)
                         await bot.sendMessage(userId, 'Wrong url')
                         return
                     }

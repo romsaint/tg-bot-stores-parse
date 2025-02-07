@@ -8,6 +8,7 @@ node_modules/
 
 /uploads
 *.xls
+*.xlsx
 
 # Игнорирование логов и кэша
 logs/
