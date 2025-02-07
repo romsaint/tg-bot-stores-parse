@@ -35,8 +35,6 @@ export async function handlerText(msg: TelegramBot.Message) {
                     parse_mode: 'HTML'
                 })
                 readyState[userId] = stores[0]
-            }else{
-                await startBot(msg)
             }
         }
     } catch (e) {

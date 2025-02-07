@@ -9,7 +9,7 @@ function numberToARGB(number: number) {
     return number.toString(16).padStart(8, '0').toUpperCase();
 }
 
-export async function saveCardToExcel(data: any, priceHistoryData: any, feedbacksData: any, urls: string[] | null, gptOpinion: string | undefined) {
+export async function saveCardToExcel(data: any, priceHistoryData: any, feedbacksData: any, urls: string[] | null, gptOpinion: string | undefined, sameProducts: string) {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Sheet');
     const rows: string[] = ['Название', 'Описание', 'Раздел', 'Продавец', 'Цвет']
@@ -108,11 +108,13 @@ export async function saveCardToExcel(data: any, priceHistoryData: any, feedback
     })
 
     if (gptOpinion) {
-        worksheet.addRow('')
-        worksheet.addRow('')
-        worksheet.addRow(['Мнение нейросети судя по отзывам'])
-        worksheet.addRow([gptOpinion])
+        worksheet.getCell('I8').value = 'Мнение нейросети судя по отзывам'
+        worksheet.getCell('I9').value = gptOpinion
     }
+
+    worksheet.getCell('K8').value = 'Похожие товары'
+    worksheet.getCell('K9').value = sameProducts
+
     await workbook.xlsx.writeFile(`${data.nm_id}.xlsx`)
 
     return `${data.nm_id}.xlsx`
