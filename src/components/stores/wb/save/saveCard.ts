@@ -1,4 +1,6 @@
 import ExcelJS from 'exceljs'
+import { createWriteStream } from 'fs';
+import PDF from 'pdfkit'
 
 
 function formatDate(timestamp: number) {
@@ -116,6 +118,28 @@ export async function saveCardToExcel(data: any, priceHistoryData: any, feedback
     worksheet.getCell('K9').value = sameProducts
 
     await workbook.xlsx.writeFile(`${data.nm_id}.xlsx`)
+
+    // PDF
+    const doc = new PDF()
+    const stream = createWriteStream('./output.pdf')
+    doc.pipe(stream)
+    doc.font('fonts/Roboto-VariableFont_wdth,wght.ttf')
+
+
+    for (let j = 0; j < dataRow.length; j++) {
+        doc.fontSize(12).text(`${rows[j]}: ${dataRow[j]}`)
+    }
+    console.log(priceData)
+    doc.fontSize(16).text(`Таблица цен с ${priceData[0][0]} по ${priceData[priceData.length - 1][0]}`)
+
+    for (let j = 0; j < priceData.length; j++) {
+        doc.fontSize(12).text(`${priceData[j][0]}: ${priceData[j][1]}`)
+    }
+
+    doc.end()
+    stream.on('finish', () => {
+        console.log('PDF создан: output.pdf');
+    });
 
     return `${data.nm_id}.xlsx`
 }

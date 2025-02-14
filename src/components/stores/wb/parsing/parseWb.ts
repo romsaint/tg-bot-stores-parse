@@ -1,9 +1,10 @@
+import { createReadStream, createWriteStream } from "fs";
 import { gpt35Turbo16k } from "../../../gpt35Turbo16";
 import { gpt4oMini } from "../../../gpt40-mini";
 import { parseCardWb, parseWbFeedbacks, parseWbPhoto, parseWbPriceHistory } from "../parseWb";
 import { saveCardToExcel } from "../save/saveCard";
-
 const puppeteer = require('puppeteer');
+
 
 export async function parseWb(url: string) {
     try {

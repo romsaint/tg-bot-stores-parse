@@ -14,9 +14,11 @@
     "dotenv": "^16.4.7",
     "exceljs": "^4.4.0",
     "jsdom": "^26.0.0",
+    "natural": "^8.0.1",
     "node-telegram-bot-api": "^0.66.0",
     "nodemon": "^3.1.9",
     "openai": "^4.78.1",
+    "pdfkit": "^0.16.0",
     "puppeteer": "^24.0.0",
     "replicate": "^1.0.1",
     "typescript": "^5.7.3",
@@ -24,6 +26,7 @@
     "xlsx-populate": "^1.21.0"
   },
   "devDependencies": {
-    "@types/node-telegram-bot-api": "^0.64.7"
+    "@types/node-telegram-bot-api": "^0.64.7",
+    "@types/pdfkit": "^0.13.9"
   }
 }
